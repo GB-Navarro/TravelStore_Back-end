@@ -7,6 +7,13 @@ mongoClient.connect().then(() => {
   db = mongoClient.db("travelStore");
 });
 
-
+export async function testDB(data){
+  try{
+    let promisse = await db.collections("test").insertOne(data)
+    console.log("Ok!",promisse);
+  }catch(error){
+    console.log("Error!", error)
+  }
+}
 
 dotenv.config();

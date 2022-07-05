@@ -12,6 +12,10 @@ app.get("/", (req,res) => {
     res.send("Hello World!");
 })
 
+app.post("/test", (req,res) => {
+    let data = req.body;
+    res.status(200).send(data);
+})
 app.listen(process.env.PORT);
 
 

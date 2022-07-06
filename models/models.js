@@ -10,7 +10,7 @@ mongoClient.connect().then(() => {
 export async function testDB(data){
   try{
     let promisse = await db.collections("test").insertOne(data)
-    console.log("Ok!",promisse);
+    console.log("Ok!", await promisse);
   }catch(error){
     console.log("Error!", error)
   }

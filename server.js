@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import { testDB } from "./models/models.js";
+
 const app = express();
 dotenv.config();
 
@@ -12,10 +14,7 @@ app.get("/", (req,res) => {
     res.send("Hello World!");
 })
 
-app.post("/test", (req,res) => {
-    let data = req.body;
-    res.status(200).send(data);
-})
+app.post("/test", testDB)
 app.listen(process.env.PORT);
 
 

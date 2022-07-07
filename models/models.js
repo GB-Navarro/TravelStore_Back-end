@@ -9,15 +9,4 @@ mongoClient.connect().then(() => {
   db = mongoClient.db("travelStore");
 });
 
-export async function testDB(req, res){
-  let data = req.body
-  try{
-    let promisse = await db.collection("test").insertOne(data)
-    console.log("Ok!", promisse);
-    res.send(200);
-  }catch(error){
-    console.log("Error!", error)
-    res.send(422);
-  }
-}
 

@@ -1,7 +1,10 @@
 import validateRegistrationData from "../functions/validateRegistrationData.js";
-import { createUser } from "../models/models.js";
+import validateUserData from "../functions/validateUserData.js"
+import { createUser, checkEmailExistence, checkUserPassword, createUserSession, checkIfUserHaveAnActiveSession } from "../models/models.js";
 
 export async function signUp(req,res){
+    //criptografar a senha do usuário antes de criar ele (bcrypt)
+    //usar o bcrypt na comparação de senhas
     let registrationData = req.body;
     let isRegistrationDataValid = await validateRegistrationData(registrationData);
     if(isRegistrationDataValid){
@@ -9,13 +12,27 @@ export async function signUp(req,res){
         if(isUserCreated){
             res.send("User is created").status(201);
         }else{
-            res.send("A error has been ocurred").status(422);
+            res.send("An error has been ocurred").status(422);
         }
     }else{
-        res.send("A error has been ocurred").status(422);
+        res.send("An error has been ocurred").status(422);
     }
 }
 
 export async function signIn(req, res){
-    //res.send("SignIn").status(200);
+    let userData = req.body;
+    let isUserDataValid = validateUserData(userData);
+    let userEmailExists = await checkEmailExistence(userData.email);
+    let userPasswordIsValid = await checkUserPassword(userData.password, userData.email);
+    let userHaveAnActiveSession = await checkIfUserHaveAnActiveSession(userData.email);
+    if(isUserDataValid && userEmailExists && userPasswordIsValid && !(userHaveAnActiveSession)){
+        let userToken = await createUserSession(userData.email);
+        if(userToken != undefined){
+            res.send(userToken).status(200);
+        }else{
+            res.send("An error has ocurred").send(422);
+        }
+    }else{
+        res.sendStatus(404);
+    }
 }

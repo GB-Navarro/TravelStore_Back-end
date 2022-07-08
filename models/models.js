@@ -1,5 +1,7 @@
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt"
+import createUserToken from "./../functions/createUserToken.js"
 
 dotenv.config();
 
@@ -34,6 +36,7 @@ export async function checkEmailExistence(email){
 }
 
 export async function createUser(registrationData){
+  registrationData.password = bcrypt.hashSync(registrationData.password, 10);
   let request = await db.collection("users").insertOne(registrationData);
   let userIsCreated;
   if(request.acknowledged){
@@ -43,4 +46,57 @@ export async function createUser(registrationData){
     userIsCreated = false;
     return userIsCreated;
   }
+}
+
+export async function getUserData(email){
+
+}
+
+export async function checkUserPassword(password,email){
+  let searchedUser = await db.collection("users").findOne({email: email});
+  let isPasswordEqual = bcrypt.compareSync(password, searchedUser.password);
+  let isPasswordValid;
+  if(isPasswordEqual){
+    isPasswordValid = true;
+    return isPasswordValid;
+  }else{
+    isPasswordValid = false;
+    return isPasswordValid;
+  }
+}
+
+export async function checkIfUserHaveAnActiveSession(email){
+  let userHaveAnActiveSession;
+  let searchResult = await db.collection("sessions").findOne({email: email});
+  if(searchResult === null){
+    userHaveAnActiveSession = false;
+    return userHaveAnActiveSession;
+  }else{
+    userHaveAnActiveSession = true;
+    return userHaveAnActiveSession;
+  }
+}
+export async function createUserSession(userData){
+  let isSessionCreated;
+  let sessionId = await getSessionId();
+  let token = createUserToken(await sessionId);
+  let sessionData = {
+    sessionId: (sessionId+1),
+    email:  userData,
+    token:  token
+  }
+  let request = await db.collection("sessions").insertOne(sessionData);
+  if(request.acknowledged){
+    isSessionCreated = true;
+    return token;
+  }else{
+    isSessionCreated = false;
+    return undefined;
+  }
+}
+
+export async function getSessionId(){
+  let sessionsArray = await db.collection("sessions").find().toArray();
+  let userId = await sessionsArray.length;
+  return userId;
 }

@@ -96,3 +96,15 @@ export async function getSessionId(){
   let userId = await sessionsArray.length;
   return userId;
 }
+
+export async function checkToken(token){
+  let tokenExists;
+  let search = await db.collection("sessions").findOne({token: token});
+  if(search === null){
+    tokenExists = false;
+    return tokenExists;
+  }else{
+    tokenExists = true;
+    return tokenExists;
+  }
+}

@@ -48,10 +48,6 @@ export async function createUser(registrationData){
   }
 }
 
-export async function getUserData(email){
-
-}
-
 export async function checkUserPassword(password,email){
   let searchedUser = await db.collection("users").findOne({email: email});
   let isPasswordEqual = bcrypt.compareSync(password, searchedUser.password);

@@ -1,19 +1,19 @@
 import validateUserToken from "../functions/validateUserToken.js";
+import getUserNextTrips from "../functions/getUserNextTrips.js"
+import { getUserName, getUserTrips } from "../models/models.js";
 
 export async function profile(req,res){
-    //recebe o email do usuário e um token
-    //valida o token nas sessões ativas
-    //retorna nome do usuário, e um array contendo as próximas viagens do usuário (a partir de hoje)
-    //o array das próximas viagens, deve conter a data, nome da cidade e país da cidade
-    /*
-    const config = {
-        headers: {
-            Authorization: `Bearer ${token}`
+    let userEmail = req.body.email;
+    if(validateUserToken(req.headers.authorization)){
+        let userName = await getUserName(userEmail);
+        let userTrips = await getUserTrips(userEmail);
+        let userNextTrips = await getUserNextTrips(userTrips);
+        let userData = {
+            name: userName,
+            nextTrips: userNextTrips
         }
-    }
-    */
-    validateUserToken(req.headers.authorization);
-    res.sendStatus(200);
+        res.send(userData).status(200);
+    }   
 }
 
 export async function history(req,res){

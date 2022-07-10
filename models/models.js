@@ -108,3 +108,26 @@ export async function checkToken(token){
     return tokenExists;
   }
 }
+
+export async function getUserName(email){
+  let search = await db.collection("users").findOne({email: email});
+  if(search === null){
+    return null;
+  }else{
+    let name = search.name;
+    return name;
+  }
+}
+
+export async function getUserTrips(email){
+  let searchedUser = await db.collection("users").findOne({email: email});
+  let userTrips = [];
+  if(searchedUser.trips === []){
+    return userTrips;
+  }else{
+    searchedUser.trips.forEach((trip) => {
+      userTrips.push(trip);
+    })
+    return userTrips;
+  }
+}

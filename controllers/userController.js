@@ -5,7 +5,14 @@ export async function profile(req,res){
     //valida o token nas sessões ativas
     //retorna nome do usuário, e um array contendo as próximas viagens do usuário (a partir de hoje)
     //o array das próximas viagens, deve conter a data, nome da cidade e país da cidade
-    console.log(await validateUserToken(req.body.token))
+    /*
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    */
+    validateUserToken(req.headers.authorization);
     res.sendStatus(200);
 }
 

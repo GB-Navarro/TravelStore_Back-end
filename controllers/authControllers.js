@@ -11,10 +11,10 @@ export async function signUp(req,res){
         if(isUserCreated){
             res.send("User is created").status(201);
         }else{
-            res.send("An error has been ocurred1").status(422);
+            res.send("An error has been ocurred").status(422);
         }
     }else{
-        res.send("An error has been ocurred2").status(422);
+        res.send("An error has been ocurred").status(422);
     }
 }
 
